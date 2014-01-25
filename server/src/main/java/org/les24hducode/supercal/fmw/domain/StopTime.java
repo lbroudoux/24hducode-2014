@@ -17,6 +17,7 @@ public class StopTime {
    @GraphId
    private Long nodeId;
    
+   // Fields coming from GTFS.
    private int arrivalTime;
    private int departureTime;
    private int stopSequence;

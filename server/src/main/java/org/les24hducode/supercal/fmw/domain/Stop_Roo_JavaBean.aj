@@ -3,6 +3,7 @@
 
 package org.les24hducode.supercal.fmw.domain;
 
+import java.util.Set;
 import org.les24hducode.supercal.fmw.domain.Stop;
 
 privileged aspect Stop_Roo_JavaBean {
@@ -77,6 +78,30 @@ privileged aspect Stop_Roo_JavaBean {
     
     public void Stop.setParentStation(String parentStation) {
         this.parentStation = parentStation;
+    }
+    
+    public Long Stop.getRouteId() {
+        return this.routeId;
+    }
+    
+    public void Stop.setRouteId(Long routeId) {
+        this.routeId = routeId;
+    }
+    
+    public Set<Stop> Stop.getRouteStops() {
+        return this.routeStops;
+    }
+    
+    public void Stop.setRouteStops(Set<Stop> routeStops) {
+        this.routeStops = routeStops;
+    }
+    
+    public Iterable<Stop> Stop.getSectionStops() {
+        return this.sectionStops;
+    }
+    
+    public void Stop.setSectionStops(Iterable<Stop> sectionStops) {
+        this.sectionStops = sectionStops;
     }
     
 }

@@ -3,7 +3,9 @@
 
 package org.les24hducode.supercal.fmw.domain;
 
+import java.util.Set;
 import org.les24hducode.supercal.fmw.domain.Route;
+import org.les24hducode.supercal.fmw.domain.Trip;
 
 privileged aspect Route_Roo_JavaBean {
     
@@ -13,6 +15,14 @@ privileged aspect Route_Roo_JavaBean {
     
     public void Route.setNodeId(Long nodeId) {
         this.nodeId = nodeId;
+    }
+    
+    public String Route.getId() {
+        return this.id;
+    }
+    
+    public void Route.setId(String id) {
+        this.id = id;
     }
     
     public String Route.getShortName() {
@@ -45,6 +55,14 @@ privileged aspect Route_Roo_JavaBean {
     
     public void Route.setRouteType(String routeType) {
         this.routeType = routeType;
+    }
+    
+    public Set<Trip> Route.getTrips() {
+        return this.trips;
+    }
+    
+    public void Route.setTrips(Set<Trip> trips) {
+        this.trips = trips;
     }
     
 }

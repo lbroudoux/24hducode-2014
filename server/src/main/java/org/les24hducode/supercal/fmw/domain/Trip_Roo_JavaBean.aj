@@ -3,6 +3,7 @@
 
 package org.les24hducode.supercal.fmw.domain;
 
+import org.les24hducode.supercal.fmw.domain.Route;
 import org.les24hducode.supercal.fmw.domain.Trip;
 
 privileged aspect Trip_Roo_JavaBean {
@@ -29,6 +30,14 @@ privileged aspect Trip_Roo_JavaBean {
     
     public void Trip.setHeadSign(String headSign) {
         this.headSign = headSign;
+    }
+    
+    public Route Trip.getRoute() {
+        return this.route;
+    }
+    
+    public void Trip.setRoute(Route route) {
+        this.route = route;
     }
     
 }

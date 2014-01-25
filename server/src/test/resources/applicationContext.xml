@@ -60,6 +60,10 @@
         <context:exclude-filter expression="org.springframework.stereotype.Controller" type="annotation"/>
     </context:component-scan>
 
-    <neo4j:config storeDirectory="data/graph.db" />
+    <neo4j:config storeDirectory="data/graph.db"/>
     <neo4j:repositories base-package="org.les24hducode.supercal.fmw.repository" />
+
+    <!-- 
+    <bean id="graphDatabaseService" class="org.neo4j.test.ImpermanentGraphDatabase" destroy-method="shutdown"/>
+     --> 
 </beans>

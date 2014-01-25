@@ -11,7 +11,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 /**
- * 
+ * Basic test case for neo4j persistence.
  * @author laurent
  */
 @ContextConfiguration(locations = "classpath:/applicationContext.xml")
@@ -23,7 +23,7 @@ public class Neo4jTest {
    
    @Test
    @Transactional
-   public void test() {
+   public void testBasicPersistenceAndRetrieval() {
       // Create and save a stop.
       Stop stop = new Stop();
       stop.setId("id");
@@ -31,8 +31,9 @@ public class Neo4jTest {
       stop.setDescription("description");
       template.save(stop);
       
-      Stop find = template.findOne(stop.getNodeId(), Stop.class);
+      Stop result = template.findOne(stop.getNodeId(), Stop.class);
       assertNotNull(stop.getNodeId());
+      assertEquals(result.getNodeId(), stop.getNodeId());
       assertEquals("name", stop.getName());
       System.err.println("Persisted nodeId: " + stop.getNodeId());
    }
