@@ -2,6 +2,7 @@ var map;
 var autocomplete;
 var watchID;
 var guyMarker;
+var ReferenceError;
 
 $(document).ready(function(){
 
@@ -13,8 +14,8 @@ $(document).ready(function(){
            types: ['(cities)'],
            componentRestrictions: {country: 'fr'}
         };
-        var input = $("#location");
-        autocomplete = new google.maps.places.Autocomplete(input, options);          
+        //var input = $("#location");
+        //autocomplete = new google.maps.places.Autocomplete(input, options);          
 });
 
 function findMyCurrentLocation(){
@@ -101,9 +102,47 @@ function refreshMap(latitude, longitude) {
 
 
 function showPath() {
-
-
-}
+    //on récupere les points
+/*    "1001","1001","Longs Champs","Rennes","48.12903716","-1.6325079","","","","","","1"
+"1002","1002","Bouzat","Rennes","48.12826604","-1.63765619","","","","","","1"
+"1003","1003","Gallets","Rennes","48.12744122","-1.64029002","","","","","","1"
+"1004","1004","Donzelot","Rennes","48.12528847","-1.64253775","","","","","","1"
+"1005","1005","Mirabeau","Rennes","48.1233588","-1.64623199","","","","","","1"
+"1006","1006","Turmel","Rennes","48.12226258","-1.65069568","","","","","","1"
+"1007","1007","Assomption","Rennes","48.12141888","-1.65505801","","","","","","1"
+*/
+    var points = [
+        {latitude : 48.12903716, longitude : -1.6325079,isPOI : true },
+        {latitude : 48.12826604,longitude : -1.63765619,isPOI : false },
+        {latitude : 48.12744122,longitude : -1.64029002,isPOI : true }
+        ];
+    //on les affiches
+    map.setCenter(latlong);
+   for (var i=0; i<points.length; i++){
+      var location = new google.maps.LatLng(points[i].latitude, points[i].longitude);
+      var marker;
+      if (points[i].isPOI){
+         marker = new google.maps.Marker({
+            position: location, map: map,
+            title: "Point #" + (i + 1),
+            icon: markerIcon, shadow: shadowIcon
+         });
+      } else {
+        marker = new google.maps.Marker({
+           position: location, map: map,
+           title: "Point #" + (i + 1),
+           icon: markerIcon
+        });
+      }
+      markers[i] = marker;
+      //addMarkerListener(marker, i);
+      // Complete trail line drawing.
+      polyline.getPath().push(location);
+   }
+   //if (trail.isRoundtrip == true){
+   //   polyline.getPath().push(markers[0].position);
+   //}
+};
 
 /*
 function determineZoomLevel(){
