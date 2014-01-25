@@ -7,6 +7,14 @@ import org.les24hducode.supercal.fmw.domain.Stop;
 
 privileged aspect Stop_Roo_JavaBean {
     
+    public Long Stop.getNodeId() {
+        return this.nodeId;
+    }
+    
+    public void Stop.setNodeId(Long nodeId) {
+        this.nodeId = nodeId;
+    }
+    
     public String Stop.getId() {
         return this.id;
     }

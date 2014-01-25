@@ -7,8 +7,11 @@
     <version>0.1.0.BUILD-SNAPSHOT</version>
     <name>fmw</name>
     <properties>
+        <!-- Simple persistence works with 1.7.0.RC1 -->
         <aspectj.version>1.7.0.RC1</aspectj.version>
-        <java.version>1.6</java.version>
+        <!-- Simple persistence works also with 1.6.12 -->
+        <!-- <aspectj.version>1.6.12</aspectj.version> -->
+        <java.version>1.7</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <roo.version>1.2.2.RELEASE</roo.version>
         <slf4j.version>1.6.4</slf4j.version>
@@ -247,7 +250,17 @@
         <dependency>
            <groupId>org.springframework.data</groupId>
            <artifactId>spring-data-neo4j</artifactId>
-           <version>2.3.3.RELEASE</version>
+           <version>2.2.0.RELEASE</version>
+        </dependency>
+        <dependency>
+           <groupId>org.springframework.data</groupId>
+           <artifactId>spring-data-neo4j-aspects</artifactId>
+           <version>2.2.0.RELEASE</version>
+        </dependency>
+        <dependency>
+           <groupId>cglib</groupId>
+           <artifactId>cglib-nodep</artifactId>
+           <version>2.2</version>
         </dependency>
         
     </dependencies>
@@ -302,6 +315,12 @@
                             <groupId>org.springframework</groupId>
                             <artifactId>spring-aspects</artifactId>
                         </aspectLibrary>
+                        <!-- Simple persistence works without aspects ....
+                        <aspectLibrary>
+                            <groupId>org.springframework.data</groupId>
+                            <artifactId>spring-data-neo4j-aspects</artifactId>
+                        </aspectLibrary>
+                        -->
                     </aspectLibraries>
                     <source>${java.version}</source>
                     <target>${java.version}</target>
