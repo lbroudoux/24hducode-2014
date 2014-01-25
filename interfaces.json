@@ -1,0 +1,58 @@
+
+// IN
+
+// OUT
+
+
+
+
+// ===================================================
+// Service de récupération des itinéraires
+// ===================================================
+
+// IN
+
+// OUT
+
+{ 
+   paths : [
+   // path 1
+   { 
+      departure_time : 062012,
+      departure_latitude : 47.56,
+      departure_longitude : -1.66,
+      arrival_time : 063515, // en fait le dernier stop time, de la dernière route de mon trajet.
+      routes : [
+         // route 1
+         {
+            short_name : "17",
+            long_name : "Mission", 
+            description : "The A route travels from lower Mission to Downtown.",
+            stopTimes : [
+               // stop time 1 (en fait, le point de départ)
+               {
+                  arrival_time : 062012,
+                  latitude : 47.56,
+                  longitude : -1.66,
+                  name : "Mission St. & Silver Ave."
+               },
+               {
+                  arrival_time : 062012,
+                  latitude : 47.56,
+                  longitude : -1.6610,
+                  name : "Mission St. & Cortland Ave."
+               },
+               { ... }
+            ]
+         },
+         // route 2
+         { ... }
+      ]
+   },
+   // path 2
+   { ... },
+   // autres paths
+   ]
+}
+      
+      
