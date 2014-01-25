@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>org.24hducode.supercal.fmw</groupId>
+    <groupId>org.les24hducode.supercal.fmw</groupId>
     <artifactId>fmw</artifactId>
     <packaging>war</packaging>
     <version>0.1.0.BUILD-SNAPSHOT</version>
@@ -30,10 +30,15 @@
             <name>Spring Roo Repository</name>
             <url>http://spring-roo-repository.springsource.org/release</url>
         </repository>
-    <repository>
+        <repository>
             <id>spring-maven-snapshot</id>
             <url>http://maven.springframework.org/milestone</url>
             <name>Spring Maven MILESTONE Repository</name>
+        </repository>
+        <repository>
+            <id>neo4j-release-repository</id>
+            <name>Neo4j Maven 2 release repository</name>
+            <url>http://m2.neo4j.org/releases</url>
         </repository>
     </repositories>
     <pluginRepositories>
