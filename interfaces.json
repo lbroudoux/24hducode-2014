@@ -1,5 +1,11 @@
 
+// ===================================================
+// Service de récupération des itinéraires
+// ===================================================
+
 // IN
+
+stop/find.json?lat=47.2&lng=2.5&
 
 // OUT
 
@@ -11,6 +17,10 @@
 // ===================================================
 
 // IN
+
+path/find.json?lat=47.2&lng=2.5&destLat=48.5&destLng=1.6
+
+Sample : curl -X GET 'http://localhost:8080/fmw/path/find.json?lat=47.2&lng=2.5&destLat=48.2&destLng=2.5' -v
 
 // OUT
 
