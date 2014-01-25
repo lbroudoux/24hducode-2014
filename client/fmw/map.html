@@ -2,11 +2,11 @@
 <html>
 
 <head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1"> 
+	<meta charset="utf-8"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1"/> 
 	<title>24H FMW</title> 
 	<link rel="stylesheet" href="jquery.mobile-1.3.1.min.css" />
-    <link rel="stylesheet" type="text/css" href="css/base.css">
+    <link rel="stylesheet" type="text/css" href="css/base.css" />
 	<script src="jquery-1.7.1.min.js"></script>
 	<script src="jquery.mobile-1.3.1.min.js"></script>
 	<script src="https://maps.googleapis.com/maps/api/js?sensor=true"></script>
@@ -15,18 +15,18 @@
 	
 <body> 
 
-<!-- Start of first page: #home -->
+<!-- Start of first page: #home 
 <div data-role="page" id="home">
 
 	<div data-role="header" data-position="fixed">
 	    <h3>24H FMW</h3>  
-	</div><!-- /header -->
+	</div>
 
 	<div data-role="content">
         <a href="#" id="btnLocateMe" data-role="button">LocateMe</a>
 		<div id="instruction">Click on the LocateMe button to retrieve the GPS Location and plot it on Google Map</div>
 		<div id="map-canvas"></div>
-	</div><!-- /content -->
+	</div>
 
 </div><!-- /page home -->
 
@@ -37,12 +37,10 @@
     <h1>24H FMW</h1>
   </div> -->
     <div id="location-search-wrapper">        
-    <form role="search">
       <p>
-        <input id="location" placeholder="Search..." type="text" value=""/>
+        <input id="location" placeholder="Destination..." type="text" value="" />
         <span  id="search-location"><a class="button" href="#" onclick="geocode()">Go!</a></span>
-      <p> 
-    </form>      
+      <p>     
     </div>
 
   <div data-role="content">
