@@ -9,12 +9,20 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.les24hducode.supercal.fmw.domain.EndEvaluator;
 import org.les24hducode.supercal.fmw.domain.Route;
 import org.les24hducode.supercal.fmw.domain.Stop;
 import org.les24hducode.supercal.fmw.domain.Trip;
 import org.les24hducode.supercal.fmw.repository.RouteRepository;
 import org.les24hducode.supercal.fmw.repository.StopRepository;
 import org.les24hducode.supercal.fmw.repository.TripRepository;
+import org.neo4j.graphdb.DynamicRelationshipType;
+import org.neo4j.graphdb.Path;
+import org.neo4j.graphdb.traversal.Evaluators;
+import org.neo4j.graphdb.traversal.TraversalDescription;
+import org.neo4j.graphdb.traversal.Traverser;
+import org.neo4j.kernel.Traversal;
+import org.neo4j.kernel.Uniqueness;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.neo4j.conversion.EndResult;
 import org.springframework.data.neo4j.support.Neo4jTemplate;
@@ -82,6 +90,18 @@ public class GTFSParserTest{
       List<Stop> stops = template.findAll(Stop.class).as(List.class);
       assertEquals(1427, stops.size());
       */
+      System.err.println("tests");
+      TraversalDescription traversalDescription = Traversal.description()
+              .breadthFirst().uniqueness(Uniqueness.NODE_PATH)
+              .relationships(DynamicRelationshipType.withName("SECTION"))
+              .evaluator(Evaluators.all())
+              .evaluator(new EndEvaluator(stops.get(10).getPersistentState()));
+        Traverser t = traversalDescription.traverse(stops.get(10).getPersistentState());
+        for (Path position : t) {
+           System.err.println("Path from start node to current position is " + position);
+           
+        }
+        System.err.println("tests");
    }
 
 }

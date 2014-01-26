@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.les24hducode.supercal.fmw.domain.Route;
+import org.les24hducode.supercal.fmw.domain.Section;
 import org.les24hducode.supercal.fmw.domain.Stop;
 import org.les24hducode.supercal.fmw.domain.Trip;
 import org.les24hducode.supercal.fmw.repository.RouteRepository;
@@ -65,9 +66,9 @@ public class GTFSParser {
             // Fill domain object from line elements.
             Trip trip = new Trip();
             trip.setId(props[0]);
-            trip.setHeadSign(props[2]);
+            trip.setHeadSign(props[3]);
             
-            Route route = repository.findRouteFromId(props[1]);
+            Route route = repository.findRouteFromId(props[2]);
             trip.setRoute(route);
             
             template.save(trip);
@@ -168,6 +169,8 @@ public class GTFSParser {
                endStop.setRouteId(route.getNodeId());
                startStop.getRouteStops().add(endStop);
                */
+               Section section = template.createRelationshipBetween(startStop, endStop, Section.class, "SECTION", true);
+               template.save(section);
             }
             alreadyProcessed.add(route);
          }
