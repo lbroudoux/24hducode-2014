@@ -13,6 +13,7 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.les24hducode.supercal.fmw.domain.Route;
+import org.les24hducode.supercal.fmw.domain.Section;
 import org.les24hducode.supercal.fmw.domain.Stop;
 import org.les24hducode.supercal.fmw.domain.Trip;
 import org.les24hducode.supercal.fmw.repository.RouteRepository;
@@ -74,9 +75,9 @@ public class GTFSParser {
             // Fill domain object from line elements.
             Trip trip = new Trip();
             trip.setId(props[0]);
-            trip.setHeadSign(props[2]);
+            trip.setHeadSign(props[3]);
             
-            Route route = repository.findRouteFromId(props[1]);
+            Route route = repository.getRouteById(props[2]);
             trip.setRoute(route);
             
             template.save(trip);
@@ -164,20 +165,22 @@ public class GTFSParser {
          Collections.sort(times);
          
          //
-         Trip trip = tripRepository.findTripFromId(tripId);
+         Trip trip = tripRepository.getTripById(tripId);
          Route route = trip.getRoute();
          
          if (!alreadyProcessed.contains(route)){
             System.err.println("Processing stops for route " + route.getId());
             for (int j=0; j<times.size()-1; j++){
-               Stop startStop = stopRepository.findStopFromId(times.get(j).stopId); 
-               Stop endStop = stopRepository.findStopFromId(times.get(j+1).stopId);
+               Stop startStop = stopRepository.getStopById(times.get(j).stopId); 
+               Stop endStop = stopRepository.getStopById(times.get(j+1).stopId);
                
                /*
                startStop.setRouteId(route.getNodeId());
                endStop.setRouteId(route.getNodeId());
                startStop.getRouteStops().add(endStop);
                */
+               Section section = template.createRelationshipBetween(startStop, endStop, Section.class, "SECTION", true);
+               //template.save(section);
             }
             alreadyProcessed.add(route);
          }

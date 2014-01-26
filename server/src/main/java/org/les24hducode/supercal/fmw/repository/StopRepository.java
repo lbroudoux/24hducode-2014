@@ -11,6 +11,8 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface StopRepository extends GraphRepository<Stop>, SpatialRepository<Stop>{
+	
+	public Stop getStopById(String id);
 
    @Query("start stop=node:Stop(id={0}) return stop")
    public Stop findStopFromId(String id);
