@@ -11,6 +11,8 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface TripRepository extends GraphRepository<Trip>{
 
+   public Trip getTripById(String id);
+   
    @Query("start trip=node:Trip(id={0}) return trip")
    public Trip findTripFromId(String id);
 }
