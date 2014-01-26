@@ -186,8 +186,18 @@ public class GTFSParser {
                endStop.setRouteId(route.getNodeId());
                startStop.getRouteStops().add(endStop);
                */
+               
+               /*
                Section section = template.createRelationshipBetween(startStop, endStop, Section.class, "SECTION", true);
-               //template.save(section);
+               template.save(startStop);
+               */
+               
+               /*
+               Section section = startStop.leadTo(endStop, route.getId());
+               template.save(startStop);
+               */
+               Section section = new Section(startStop, endStop, route.getId());
+               template.save(section);
             }
             alreadyProcessed.add(route);
          }

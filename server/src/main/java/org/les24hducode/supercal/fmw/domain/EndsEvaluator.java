@@ -26,7 +26,8 @@ public class EndsEvaluator implements PathEvaluator {
 
    @Override
    public Evaluation evaluate(Path path) {
-      if (endNodesId.contains(path.reverseNodes().iterator().next().getId())){
+      long id = path.reverseNodes().iterator().next().getId();
+      if (endNodesId.contains(id)){
          return org.neo4j.graphdb.traversal.Evaluation.INCLUDE_AND_CONTINUE;
       }
       return org.neo4j.graphdb.traversal.Evaluation.EXCLUDE_AND_CONTINUE;
@@ -34,7 +35,8 @@ public class EndsEvaluator implements PathEvaluator {
 
    @Override
    public Evaluation evaluate(Path path, BranchState state) {
-      if (endNodesId.contains(path.reverseNodes().iterator().next().getId())){
+      long id = path.reverseNodes().iterator().next().getId();
+      if (endNodesId.contains(id)){
          return org.neo4j.graphdb.traversal.Evaluation.INCLUDE_AND_CONTINUE;
       }
       return org.neo4j.graphdb.traversal.Evaluation.EXCLUDE_AND_CONTINUE;

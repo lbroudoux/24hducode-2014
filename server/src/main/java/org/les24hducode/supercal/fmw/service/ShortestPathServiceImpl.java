@@ -1,22 +1,29 @@
 package org.les24hducode.supercal.fmw.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Path;
+import org.neo4j.graphdb.Relationship;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.neo4j.support.Neo4jTemplate;
 import org.springframework.stereotype.Service;
 
 import org.les24hducode.supercal.fmw.api.PathView;
 import org.les24hducode.supercal.fmw.api.RouteView;
 import org.les24hducode.supercal.fmw.api.StopTimeView;
-import org.les24hducode.supercal.fmw.domain.EndEvaluator;
 import org.les24hducode.supercal.fmw.domain.EndsEvaluator;
+import org.les24hducode.supercal.fmw.domain.Route;
+import org.les24hducode.supercal.fmw.domain.Section;
 import org.les24hducode.supercal.fmw.domain.Stop;
+import org.les24hducode.supercal.fmw.repository.RouteRepository;
 import org.les24hducode.supercal.fmw.repository.StopRepository;
 import org.neo4j.graphdb.DynamicRelationshipType;
 import org.neo4j.graphdb.traversal.Evaluators;
@@ -35,7 +42,13 @@ public class ShortestPathServiceImpl implements ShortestPathService {
    private static Log log = LogFactory.getLog(ShortestPathServiceImpl.class);
 
    @Autowired
+   private RouteRepository routeRepository;
+   
+   @Autowired
    private StopRepository stopRepository;
+   
+   @Autowired
+   private Neo4jTemplate template;
    
    @Override
    public List<PathView> getShortestPath(Double latitude, Double longitude, Double destinationLatitude, Double destinationLongitude) {
@@ -43,19 +56,14 @@ public class ShortestPathServiceImpl implements ShortestPathService {
       log.info("Being at (" + latitude + ", " + longitude + ")");
       log.info("  Computing shortest path for (" + destinationLatitude + ", " + destinationLongitude + ")");
       
-      
-      
-      /*
-      Iterable<Stop> startStops = stopRepository.findWithinDistance("stopLocation", latitude, longitude, 0.5);
-      Iterable<Stop> endStops = stopRepository.findWithinDistance("stopLocation", destinationLatitude, destinationLongitude, 0.2);
-      
-      List<Node> endNodes = new ArrayList<Node>();
-      for (Stop stop : endStops){
-         log.info("-> found end stop : " + stop.getWkt()  + " - " + stop.getId());
-         endNodes.add(stop.getPersistentState());
+      /* Ca marche, on garde au cas où ...
+      Iterable<Section> sections = template.findAll(Section.class);
+      int sectionNb = 0;
+      for (Section section : sections){
+         sectionNb++;
       }
-      */
-      
+      log.info("Found " + sectionNb + " sections");
+       
       List<Stop> startStops = new ArrayList<Stop>();
       Stop stop = stopRepository.getStopById("\"2005\"");
       startStops.add(stop);
@@ -82,31 +90,84 @@ public class ShortestPathServiceImpl implements ShortestPathService {
             .evaluator(new EndsEvaluator(endNodes));
     
       Traverser t1 = td.traverse(stop.getPersistentState());
-      for (Path position : t1) {
-         System.err.println("Path from start node to current position is " + position);
+      */
+      
+      Iterable<Stop> startStops = stopRepository.findWithinDistance("stopLocation", latitude, longitude, 0.2);
+      Iterable<Stop> endStops = stopRepository.findWithinDistance("stopLocation", destinationLatitude, destinationLongitude, 0.2);
+      
+      List<Node> endNodes = new ArrayList<Node>();
+      for (Stop stop : endStops){
+         log.info("-> found end stop : " + stop.getWkt()  + " - " + stop.getId());
+         endNodes.add(stop.getPersistentState());
       }
       
-//      log.info("Before loop ...");
-//      for (Stop start : startStops){
-//         log.info("-> found start stop : " + start.getWkt() + " - " + start.getId());
-//         log.info("Building traversal for " + start.getId());
-//         
-//         TraversalDescription traversalDescription = Traversal.description()
-//               .breadthFirst().uniqueness(Uniqueness.NODE_PATH)
-//               .relationships(DynamicRelationshipType.withName("SECTION"))
-//               .evaluator(Evaluators.all())
-//               .evaluator(new EndsEvaluator(endNodes));
-//         
-//         log.info("Calling traverse for " + start.getId() + " - " + start.getPersistentState());
-//         Traverser t = traversalDescription.traverse(start.getPersistentState());
-//         for (Path position : t){
-//            log.info("Path from start node to current position is " + position);
-//            for (Node node : position.nodes()){
-//               log.info("Found node: " + node);
-//            }
-//         }
-//      }
+      // Prepare result container.
+      List<PathView> results = new ArrayList<PathView>();
       
+      for (Stop start : startStops){
+         log.info("-> found start stop : " + start.getWkt()  + " - " + start.getId());
+         
+         // Search for paths from each start point, traversing graph.
+         TraversalDescription traversalDescription = Traversal.description()
+             .breadthFirst().uniqueness(Uniqueness.NODE_PATH)
+             .relationships(DynamicRelationshipType.withName("SECTION"))
+             .evaluator(Evaluators.all())
+             .evaluator(new EndsEvaluator(endNodes));
+       
+         Traverser t = traversalDescription.traverse(start.getPersistentState());
+         
+         for (Path position : t) {
+            // Compose a PathView for each proposed path.
+            log.debug("Path from start node to current position is " + position);
+            
+            PathView pathView = new PathView();
+            Map<String, RouteView> routesMap = new HashMap<String, RouteView>();
+            
+            // We should keep last route id in case of terminal node.
+            String lastRouteId = null;
+            
+            // Iterate same time on nodes and relations.
+            Iterator<Relationship> relIterator = position.relationships().iterator();
+            for (Node node : position.nodes()){
+              log.info("Found node: " + node + " - " + node.getId() + " - " + node.getClass());
+              
+              String routeId = null;
+              if (relIterator.hasNext()){
+                 Relationship relation = relIterator.next();
+                 Section section = template.findOne(relation.getId(), Section.class);
+                 routeId = section.getRouteId();
+                 lastRouteId = routeId;
+              } else {
+                 routeId = lastRouteId;
+              }
+              
+              RouteView rv = routesMap.get(routeId);
+              if (rv == null){
+                 // Retrieve route and create partial representation.
+                 Route route = routeRepository.getRouteById(routeId);
+                 rv = new RouteView();
+                 rv.setShortName(route.getShortName());
+                 rv.setLongName(route.getLongName());
+                 rv.setDescription(route.getDescription());
+                 routesMap.put(routeId, rv);
+              }
+              
+              // Retrieve stop and build an aggregate view with corresponding StopTime. 
+              Stop stopTemp = template.findOne(node.getId(), Stop.class);
+              StopTimeView stv = new StopTimeView();
+              stv.setLatitude(stopTemp.getLatitude());
+              stv.setLongitude(stopTemp.getLongitude());
+              stv.setName(stopTemp.getName());
+              
+              rv.getStopTimes().add(stv);
+            }
+            
+            pathView.setRoutes(new ArrayList<RouteView>(routesMap.values()));
+            results.add(pathView);
+         }
+      }
+      
+      /* Les gros bouchons qui fonctionnent bien ...
       List<PathView> results = new ArrayList<PathView>();
       
       PathView pv1 = new PathView();
@@ -135,6 +196,7 @@ public class ShortestPathServiceImpl implements ShortestPathService {
       
       pv1.getRoutes().add(route);
       results.add(pv1);
+      */
       
       return results;
    }

@@ -95,6 +95,7 @@ public class LoaddataController {
       try{
          File stopTimeFile = new File("target/test-classes/gtfs/stop_times.txt");
          parser.parseGTFSStopTimes(stopTimeFile, tripRepository, stopRepository);
+         tx.success();
       } catch (Exception e) {
          log.error("Exception while parsing stop_times file", e);
       } finally {

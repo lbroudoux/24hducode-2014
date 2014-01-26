@@ -13,6 +13,7 @@ import org.springframework.data.neo4j.annotation.GraphTraversal;
 import org.springframework.data.neo4j.annotation.Indexed;
 import org.springframework.data.neo4j.annotation.NodeEntity;
 import org.springframework.data.neo4j.annotation.RelatedTo;
+import org.springframework.data.neo4j.annotation.RelatedToVia;
 import org.springframework.data.neo4j.core.FieldTraversalDescriptionBuilder;
 import org.springframework.data.neo4j.mapping.Neo4jPersistentProperty;
 import org.springframework.data.neo4j.support.index.IndexType;
@@ -47,16 +48,15 @@ public class Stop {
    @RelatedTo(type = "ROUTE", direction = Direction.BOTH)
    private Set<Stop> routeStops = new HashSet<Stop>();
    
-   /*
-   @RelatedToVia
-   private List<Section> sections;
    
-   private Section leadTo(Stop end, String routeId){
+   @RelatedToVia(type = "SECTION", direction = Direction.BOTH)
+   private Set<Section> sections;
+   
+   public Section leadTo(Stop end, String routeId){
       Section section = new Section(this, end, routeId);
       sections.add(section);
       return section;
    }
-   */
    
    @GraphTraversal(traversal = SectionTraversalBuilder.class, elementClass = Stop.class, params = "SECTION")
    private Iterable<Stop> sectionStops;

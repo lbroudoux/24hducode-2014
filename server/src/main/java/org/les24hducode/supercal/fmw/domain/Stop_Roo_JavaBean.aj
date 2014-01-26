@@ -4,6 +4,7 @@
 package org.les24hducode.supercal.fmw.domain;
 
 import java.util.Set;
+import org.les24hducode.supercal.fmw.domain.Section;
 import org.les24hducode.supercal.fmw.domain.Stop;
 
 privileged aspect Stop_Roo_JavaBean {
@@ -94,6 +95,14 @@ privileged aspect Stop_Roo_JavaBean {
     
     public void Stop.setRouteStops(Set<Stop> routeStops) {
         this.routeStops = routeStops;
+    }
+    
+    public Set<Section> Stop.getSections() {
+        return this.sections;
+    }
+    
+    public void Stop.setSections(Set<Section> sections) {
+        this.sections = sections;
     }
     
     public Iterable<Stop> Stop.getSectionStops() {

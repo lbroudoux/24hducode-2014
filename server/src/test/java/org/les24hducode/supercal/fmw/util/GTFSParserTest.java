@@ -13,6 +13,7 @@ import org.junit.runner.RunWith;
 import org.les24hducode.supercal.fmw.domain.EndEvaluator;
 import org.les24hducode.supercal.fmw.domain.EndsEvaluator;
 import org.les24hducode.supercal.fmw.domain.Route;
+import org.les24hducode.supercal.fmw.domain.Section;
 import org.les24hducode.supercal.fmw.domain.Stop;
 import org.les24hducode.supercal.fmw.domain.Trip;
 import org.les24hducode.supercal.fmw.repository.RouteRepository;
@@ -112,6 +113,13 @@ public class GTFSParserTest{
            
         }
         System.err.println("tests");
+        
+        Iterable<Section> sections = template.findAll(Section.class);
+        int sectionNb = 0;
+        for (Section section : sections) {
+           sectionNb++;
+        }
+        System.err.println("Found " + sectionNb + " sections");
         
         
         Stop stop1 = stopRepository.getStopById("\"1052\"");
