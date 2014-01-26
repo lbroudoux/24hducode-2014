@@ -1,11 +1,20 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:neo4j="http://www.springframework.org/schema/data/neo4j"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<<<<<<< HEAD
        xsi:schemaLocation="http://www.springframework.org/schema/context 
        http://www.springframework.org/schema/context/spring-context-3.1.xsd http://www.springframework.org/schema/data/neo4j 
        http://www.springframework.org/schema/data/neo4j/spring-neo4j.xsd">
     
     <neo4j:config storeDirectory="data/graph.db"/>
     <neo4j:repositories base-package="org.les24hducode.supercal.fmw.repository"/>
+=======
+       xsi:schemaLocation="http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd
+         http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+         http://www.springframework.org/schema/data/neo4j http://www.springframework.org/schema/data/neo4j/spring-neo4j.xsd">
     
+    <neo4j:config storeDirectory="data/graph.db"/>
+>>>>>>> 5dd1286812849fb7424ea8fe7e035d99d0e277ea
+    
+    <neo4j:repositories base-package="org.les24hducode.supercal.fmw.repository"/>
 </beans>

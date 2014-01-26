@@ -11,6 +11,8 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface RouteRepository extends GraphRepository<Route>{
 
+   public Route getRouteById(String id);
+   
    @Query("start route=node:Route(id={0}) return route")
    public Route findRouteFromId(String id);
 }
