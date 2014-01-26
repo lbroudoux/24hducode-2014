@@ -11,12 +11,14 @@ import org.neo4j.kernel.impl.traversal.TraversalDescriptionImpl;
 import org.springframework.data.neo4j.annotation.Fetch;
 import org.springframework.data.neo4j.annotation.GraphId;
 import org.springframework.data.neo4j.annotation.GraphTraversal;
+import org.springframework.data.neo4j.annotation.Indexed;
 import org.springframework.data.neo4j.annotation.NodeEntity;
 import org.springframework.data.neo4j.annotation.RelatedTo;
 import org.springframework.data.neo4j.annotation.RelatedToVia;
 import org.springframework.data.neo4j.aspects.core.NodeBacked;
 import org.springframework.data.neo4j.core.FieldTraversalDescriptionBuilder;
 import org.springframework.data.neo4j.mapping.Neo4jPersistentProperty;
+import org.springframework.data.neo4j.support.index.IndexType;
 import org.springframework.roo.addon.javabean.RooJavaBean;
 import org.springframework.roo.addon.tostring.RooToString;
 /**
@@ -68,5 +70,11 @@ public class Stop {
           return new TraversalDescriptionImpl()
              .relationships(DynamicRelationshipType.withName(params[0])).depthFirst();
        }
+   }
+   
+   @Indexed(indexType = IndexType.POINT, indexName = "stopLocation")
+   String wkt;
+   public void setLocation(double lon, double lat) {
+      this.wkt = String.format("POINT( %.3f %.3f )",lon,lat).replace(',', '.');
    }
 }

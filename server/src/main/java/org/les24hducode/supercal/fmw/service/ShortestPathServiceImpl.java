@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.les24hducode.supercal.fmw.api.PathView;
 import org.les24hducode.supercal.fmw.api.RouteView;
 import org.les24hducode.supercal.fmw.api.StopTimeView;
+import org.les24hducode.supercal.fmw.repository.StopRepository;
 /**
  * ShortestService default implementation.
  * @author laurent
@@ -22,6 +23,9 @@ public class ShortestPathServiceImpl implements ShortestPathService {
    /** A commons logger for diagnostic messages. */
    private static Log log = LogFactory.getLog(ShortestPathServiceImpl.class);
 
+   @Autowired
+   private StopRepository stopRepository;
+   
    @Override
    public List<PathView> getShortestPath(Double latitude, Double longitude, Double destinationLatitude, Double destinationLongitude) {
       // Display some fancy trace messages.

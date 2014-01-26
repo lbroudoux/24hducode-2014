@@ -104,4 +104,12 @@ privileged aspect Stop_Roo_JavaBean {
         this.sectionStops = sectionStops;
     }
     
+    public String Stop.getWkt() {
+        return this.wkt;
+    }
+    
+    public void Stop.setWkt(String wkt) {
+        this.wkt = wkt;
+    }
+    
 }
