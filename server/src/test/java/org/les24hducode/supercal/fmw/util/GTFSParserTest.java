@@ -90,13 +90,20 @@ public class GTFSParserTest{
       List<Stop> stops = template.findAll(Stop.class).as(List.class);
       assertEquals(1427, stops.size());
       */
+      //for (Stop stop : stops) {
+    //	  System.out.println("ID : "+ stop.getId());
+	//}
+      Stop start = stopRepository.getStopById("\"2005\"");
+      Stop stop = stopRepository.getStopById("\"1052\"");
       System.err.println("tests");
       TraversalDescription traversalDescription = Traversal.description()
               .breadthFirst().uniqueness(Uniqueness.NODE_PATH)
               .relationships(DynamicRelationshipType.withName("SECTION"))
               .evaluator(Evaluators.all())
-              .evaluator(new EndEvaluator(stops.get(10).getPersistentState()));
-        Traverser t = traversalDescription.traverse(stops.get(10).getPersistentState());
+              .evaluator(new EndEvaluator(stop.getPersistentState()));
+      
+      
+        Traverser t = traversalDescription.traverse(start.getPersistentState());
         for (Path position : t) {
            System.err.println("Path from start node to current position is " + position);
            
