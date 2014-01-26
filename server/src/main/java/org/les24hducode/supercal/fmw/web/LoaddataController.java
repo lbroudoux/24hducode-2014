@@ -51,7 +51,7 @@ public class LoaddataController {
       Transaction tx = template.getGraphDatabaseService().beginTx();
       log.info("Starting to parse routes file...");
       try{
-         File routeFile = new File("target/test-classes/gtfs/routes.txt");
+         File routeFile = new File("target/test-classes/gtfs/old/routes.txt");
          parser.parseGTFSRoutes(routeFile);
          tx.success();
       } catch (Exception e) {
@@ -65,7 +65,7 @@ public class LoaddataController {
       tx = template.getGraphDatabaseService().beginTx();
       log.info("Starting to parse trips file...");
       try{
-         File tripFile = new File("target/test-classes/gtfs/trips.txt");
+         File tripFile = new File("target/test-classes/gtfs/old/trips.txt");
          parser.parseGTFSTrips(tripFile, routeRepository);
          tx.success();
       } catch (Exception e) {
@@ -79,7 +79,7 @@ public class LoaddataController {
       tx = template.getGraphDatabaseService().beginTx();
       log.info("Starting to parse stops file...");
       try{
-         File stopFile = new File("target/test-classes/gtfs/stops.txt");
+         File stopFile = new File("target/test-classes/gtfs/old/stops.txt");
          parser.parseGTFSStops(stopFile, routeRepository);
          tx.success();
       } catch (Exception e) {
@@ -93,7 +93,7 @@ public class LoaddataController {
       tx = template.getGraphDatabaseService().beginTx();
       log.info("Starting to parse stops file...");
       try{
-         File stopTimeFile = new File("target/test-classes/gtfs/stop_times.txt");
+         File stopTimeFile = new File("target/test-classes/gtfs/old/stop_times.txt");
          parser.parseGTFSStopTimes(stopTimeFile, tripRepository, stopRepository);
          tx.success();
       } catch (Exception e) {

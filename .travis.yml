@@ -1,0 +1,4 @@
+before_install: cd fmw
+language: java
+jdk:
+  - openjdk7

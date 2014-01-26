@@ -31,6 +31,13 @@ public class GTFSParser {
    
    private Neo4jTemplate template;
    
+   private Map<String, Route> routesMap = new HashMap<String, Route>();
+   
+   private Map<String, Trip> tripsMap = new HashMap<String, Trip>();
+   
+   private Map<String, Stop> stopsMap = new HashMap<String, Stop>();
+   
+   
    public GTFSParser(Neo4jTemplate template){
       this.template = template;
    }
@@ -53,6 +60,7 @@ public class GTFSParser {
             route.setRouteType(props[4]);
             
             template.save(route);
+            routesMap.put(route.getId(), route);
          }
          line = reader.readLine();
       }
@@ -77,10 +85,12 @@ public class GTFSParser {
             trip.setId(props[0]);
             trip.setHeadSign(props[3]);
             
-            Route route = repository.getRouteById(props[2]);
+            //Route route = repository.getRouteById(props[2]);
+            Route route = routesMap.get(props[2]);
             trip.setRoute(route);
             
             template.save(trip);
+            tripsMap.put(trip.getId(), trip);
          }
          i++;
          line = reader.readLine();
@@ -117,6 +127,7 @@ public class GTFSParser {
             stop.setLocation(Double.valueOf(latitude), Double.valueOf(longitude));
             
             template.save(stop);
+            stopsMap.put(stop.getId(), stop);
          }
          i++;
          line = reader.readLine();
@@ -172,14 +183,18 @@ public class GTFSParser {
          Collections.sort(times);
          
          //
-         Trip trip = tripRepository.getTripById(tripId);
+         //Trip trip = tripRepository.getTripById(tripId);
+         Trip trip = tripsMap.get(tripId);
          Route route = trip.getRoute();
          
          if (!alreadyProcessed.contains(route)){
             System.err.println("Processing stops for route " + route.getId());
             for (int j=0; j<times.size()-1; j++){
-               Stop startStop = stopRepository.getStopById(times.get(j).stopId); 
-               Stop endStop = stopRepository.getStopById(times.get(j+1).stopId);
+               //Stop startStop = stopRepository.getStopById(times.get(j).stopId); 
+               //Stop endStop = stopRepository.getStopById(times.get(j+1).stopId);
+               
+               Stop startStop = stopsMap.get(times.get(j).stopId); 
+               Stop endStop = stopsMap.get(times.get(j+1).stopId);
                
                /*
                startStop.setRouteId(route.getNodeId());

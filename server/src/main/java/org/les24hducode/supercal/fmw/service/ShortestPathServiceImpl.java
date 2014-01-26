@@ -41,6 +41,11 @@ public class ShortestPathServiceImpl implements ShortestPathService {
    /** A commons logger for diagnostic messages. */
    private static Log log = LogFactory.getLog(ShortestPathServiceImpl.class);
 
+   /** */
+   private static final int STOP_THRESHOLD = 3;
+   /** */
+   private static final int PATH_THRESHOLD = 3;
+   
    @Autowired
    private RouteRepository routeRepository;
    
@@ -49,6 +54,7 @@ public class ShortestPathServiceImpl implements ShortestPathService {
    
    @Autowired
    private Neo4jTemplate template;
+   
    
    @Override
    public List<PathView> getShortestPath(Double latitude, Double longitude, Double destinationLatitude, Double destinationLongitude) {
@@ -96,75 +102,97 @@ public class ShortestPathServiceImpl implements ShortestPathService {
       Iterable<Stop> endStops = stopRepository.findWithinDistance("stopLocation", destinationLatitude, destinationLongitude, 0.2);
       
       List<Node> endNodes = new ArrayList<Node>();
+      int stopThreshold = 0;
       for (Stop stop : endStops){
-         log.info("-> found end stop : " + stop.getWkt()  + " - " + stop.getId());
-         endNodes.add(stop.getPersistentState());
+         if (stopThreshold < STOP_THRESHOLD){
+            log.info("-> found end stop : " + stop.getWkt()  + " - " + stop.getId());
+            endNodes.add(stop.getPersistentState());
+         } else {
+            break;
+         }
+         stopThreshold++;
       }
       
       // Prepare result container.
       List<PathView> results = new ArrayList<PathView>();
       
+      stopThreshold = 0;
       for (Stop start : startStops){
-         log.info("-> found start stop : " + start.getWkt()  + " - " + start.getId());
-         
-         // Search for paths from each start point, traversing graph.
-         TraversalDescription traversalDescription = Traversal.description()
-             .breadthFirst().uniqueness(Uniqueness.NODE_PATH)
-             .relationships(DynamicRelationshipType.withName("SECTION"))
-             .evaluator(Evaluators.all())
-             .evaluator(new EndsEvaluator(endNodes));
-       
-         Traverser t = traversalDescription.traverse(start.getPersistentState());
-         
-         for (Path position : t) {
-            // Compose a PathView for each proposed path.
-            log.debug("Path from start node to current position is " + position);
+         if (stopThreshold < STOP_THRESHOLD){
+            log.info("-> found start stop : " + start.getWkt()  + " - " + start.getId());
             
-            PathView pathView = new PathView();
-            Map<String, RouteView> routesMap = new HashMap<String, RouteView>();
+            // Search for paths from each start point, traversing graph.
+            TraversalDescription traversalDescription = Traversal.description()
+                .breadthFirst().uniqueness(Uniqueness.NODE_PATH)
+                .relationships(DynamicRelationshipType.withName("SECTION"))
+                .evaluator(Evaluators.all())
+                .evaluator(new EndsEvaluator(endNodes));
+          
+            Traverser t = traversalDescription.traverse(start.getPersistentState());
             
-            // We should keep last route id in case of terminal node.
-            String lastRouteId = null;
-            
-            // Iterate same time on nodes and relations.
-            Iterator<Relationship> relIterator = position.relationships().iterator();
-            for (Node node : position.nodes()){
-              log.info("Found node: " + node + " - " + node.getId() + " - " + node.getClass());
-              
-              String routeId = null;
-              if (relIterator.hasNext()){
-                 Relationship relation = relIterator.next();
-                 Section section = template.findOne(relation.getId(), Section.class);
-                 routeId = section.getRouteId();
-                 lastRouteId = routeId;
-              } else {
-                 routeId = lastRouteId;
-              }
-              
-              RouteView rv = routesMap.get(routeId);
-              if (rv == null){
-                 // Retrieve route and create partial representation.
-                 Route route = routeRepository.getRouteById(routeId);
-                 rv = new RouteView();
-                 rv.setShortName(route.getShortName());
-                 rv.setLongName(route.getLongName());
-                 rv.setDescription(route.getDescription());
-                 routesMap.put(routeId, rv);
-              }
-              
-              // Retrieve stop and build an aggregate view with corresponding StopTime. 
-              Stop stopTemp = template.findOne(node.getId(), Stop.class);
-              StopTimeView stv = new StopTimeView();
-              stv.setLatitude(stopTemp.getLatitude());
-              stv.setLongitude(stopTemp.getLongitude());
-              stv.setName(stopTemp.getName());
-              
-              rv.getStopTimes().add(stv);
+            int pathThreshold = 0;
+            for (Path position : t) {
+               if (pathThreshold < PATH_THRESHOLD){
+                  // Compose a PathView for each proposed path.
+                  log.debug("Path from start node to current position is " + position);
+                  
+                  PathView pathView = new PathView();
+                  Map<String, RouteView> routesMap = new HashMap<String, RouteView>();
+                  
+                  // We should keep last route id in case of terminal node.
+                  String lastRouteId = null;
+                  
+                  // Iterate same time on nodes and relations.
+                  Iterator<Relationship> relIterator = position.relationships().iterator();
+                  for (Node node : position.nodes()){
+                    log.info("Found node: " + node + " - " + node.getId() + " - " + node.getClass());
+                    
+                    String routeId = null;
+                    if (relIterator.hasNext()){
+                       Relationship relation = relIterator.next();
+                       Section section = template.findOne(relation.getId(), Section.class);
+                       routeId = section.getRouteId();
+                       lastRouteId = routeId;
+                    } else {
+                       routeId = lastRouteId;
+                    }
+                    
+                    RouteView rv = routesMap.get(routeId);
+                    if (rv == null){
+                       // Retrieve route and create partial representation.
+                       Route route = routeRepository.getRouteById(routeId);
+                       rv = buildRouteView(route);
+                       routesMap.put(routeId, rv);
+                    }
+                    
+                    // Retrieve stop and build an aggregate view with corresponding StopTime. 
+                    Stop stopTemp = template.findOne(node.getId(), Stop.class);
+                    StopTimeView stv = new StopTimeView();
+                    stv.setLatitude(stopTemp.getLatitude());
+                    stv.setLongitude(stopTemp.getLongitude());
+                    stv.setName(stopTemp.getName());
+                    
+                    rv.getStopTimes().add(stv);
+                  }
+                  
+                  pathView.setRoutes(new ArrayList<RouteView>(routesMap.values()));
+                  
+                  if (!pathView.getRoutes().isEmpty()){
+                     if (!pathView.getRoutes().get(0).getStopTimes().isEmpty()){
+                        pathView.setDepartureLatitude(pathView.getRoutes().get(0).getStopTimes().get(0).getLatitude());
+                        pathView.setDepartureLongitude(pathView.getRoutes().get(0).getStopTimes().get(0).getLongitude());
+                     }
+                  }
+                  results.add(pathView);
+               } else {
+                  break;
+               }
+               pathThreshold++;
             }
-            
-            pathView.setRoutes(new ArrayList<RouteView>(routesMap.values()));
-            results.add(pathView);
+         } else {
+            break;
          }
+         stopThreshold++;
       }
       
       /* Les gros bouchons qui fonctionnent bien ...
@@ -199,5 +227,13 @@ public class ShortestPathServiceImpl implements ShortestPathService {
       */
       
       return results;
+   }
+   
+   private RouteView buildRouteView(Route route){
+      RouteView rv = new RouteView();
+      rv.setShortName(route.getShortName());
+      rv.setLongName(route.getLongName());
+      rv.setDescription(route.getDescription());
+      return rv;
    }
 }
