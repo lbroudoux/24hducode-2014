@@ -37,6 +37,7 @@ public class LoaddataController {
    @Autowired
    private TripRepository tripRepository;
    
+   
    @RequestMapping(value = "/", method = RequestMethod.GET)
    public String load(
          ModelMap modelMap) throws Exception{
@@ -73,6 +74,33 @@ public class LoaddataController {
          tx.finish();
       }
       log.info("   ... trips file loaded in Graph");
+      
+      // Then stops ...
+      tx = template.getGraphDatabaseService().beginTx();
+      log.info("Starting to parse stops file...");
+      try{
+         File stopFile = new File("target/test-classes/gtfs/stops.txt");
+         parser.parseGTFSStops(stopFile, routeRepository);
+         tx.success();
+      } catch (Exception e) {
+         log.error("Exception while parsing stops file", e);
+      } finally {
+         tx.finish();
+      }
+      log.info("   ... stops file loaded in Graph");
+      
+      // Then stop_times ...
+      tx = template.getGraphDatabaseService().beginTx();
+      log.info("Starting to parse stops file...");
+      try{
+         File stopTimeFile = new File("target/test-classes/gtfs/stop_times.txt");
+         parser.parseGTFSStopTimes(stopTimeFile, tripRepository, stopRepository);
+      } catch (Exception e) {
+         log.error("Exception while parsing stop_times file", e);
+      } finally {
+         tx.finish();
+      }
+      log.info("   ... stop_times file loaded in Graph");
       
       return "load/load";
    }

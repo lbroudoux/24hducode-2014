@@ -72,6 +72,6 @@ public class Stop {
    @Indexed(indexType = IndexType.POINT, indexName = "stopLocation")
    String wkt;
    public void setLocation(double lon, double lat) {
-      this.wkt = String.format("POINT( %.3f %.3f )",lon,lat).replace(',', '.');
+      this.wkt = String.format("POINT( %.4f %.4f )",lon,lat).replace(',', '.');
    }
 }

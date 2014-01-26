@@ -92,7 +92,11 @@ public class GTFSParser {
       // Browse file lines.
       BufferedReader reader = new BufferedReader(new FileReader(stopsFile));
       String line = reader.readLine();
+      int i = 1;
       while (line != null){
+         if (i % 50 == 0){
+            log.info("   ... done " + i + " stops ...");
+         }
          // Evict header line.
          if (!line.startsWith("stop_id")){
             // stop_id,stop_code,stop_name,stop_desc,stop_lat,stop_lon,zone_id,stop_url,location_type,parent_station,stop_timezone,wheelchair_boarding
@@ -110,8 +114,11 @@ public class GTFSParser {
             stop.setLongitude(Double.valueOf(longitude));
             stop.setUrl(props[7]);
             
+            stop.setLocation(Double.valueOf(latitude), Double.valueOf(longitude));
+            
             template.save(stop);
          }
+         i++;
          line = reader.readLine();
       }
       reader.close();
@@ -126,10 +133,10 @@ public class GTFSParser {
       String line = reader.readLine();
       int i = 1;
       while (line != null){
-         // Evict header line.
          if (i % 50 == 0){
             log.info("   ... done " + i + " stopTimes ...");
          }
+         // Evict header line.
          if (!line.startsWith("trip_id")){
             // trip_id,stop_id,stop_sequence,arrival_time,departure_time,stop_headsign,pickup_type,drop_off_type,shape_dist_traveled
             String[] props = line.split(",");

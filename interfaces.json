@@ -22,6 +22,15 @@ path/find.json?lat=47.2&lng=2.5&destLat=48.5&destLng=1.6
 
 Sample : curl -X GET 'http://localhost:8080/fmw/path/find.json?lat=47.2&lng=2.5&destLat=48.2&destLng=2.5' -v
 
+
+2005 => 1052
+http://localhost:8080/fmw/path/find.json?lat=48.12449724&lng=-1.59420301&destLat=48.10989306&destLng=-1.67887428
+
+2005 => 1062
+http://localhost:8080/fmw/path/find.json?lat=48.12449724&lng=-1.59420301&destLat=48.09512646&destLng=-1.65055801
+
+
+
 // OUT
 
 { 
