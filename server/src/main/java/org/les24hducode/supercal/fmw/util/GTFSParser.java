@@ -10,6 +10,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.les24hducode.supercal.fmw.domain.Route;
 import org.les24hducode.supercal.fmw.domain.Stop;
 import org.les24hducode.supercal.fmw.domain.Trip;
@@ -23,13 +25,16 @@ import org.springframework.data.neo4j.support.Neo4jTemplate;
  */
 public class GTFSParser {
 
+   /** A commons logger for diagnostic messages. */
+   private static Log log = LogFactory.getLog(GTFSParser.class);
+   
    private Neo4jTemplate template;
    
    public GTFSParser(Neo4jTemplate template){
       this.template = template;
    }
    
-   protected void parseGTFSRoutes(File routesFile) throws IOException{
+   public void parseGTFSRoutes(File routesFile) throws IOException{
       // Browse file lines.
       BufferedReader reader = new BufferedReader(new FileReader(routesFile));
       String line = reader.readLine();
@@ -53,11 +58,15 @@ public class GTFSParser {
       reader.close();
    }
    
-   protected void parseGTFSTrips(File tripsFile, RouteRepository repository) throws IOException{
+   public void parseGTFSTrips(File tripsFile, RouteRepository repository) throws IOException{
       // Browse file lines.
       BufferedReader reader = new BufferedReader(new FileReader(tripsFile));
       String line = reader.readLine();
+      int i = 1;
       while (line != null){
+         if (i % 50 == 0){
+            log.info("   ... done " + i + " trips ...");
+         }
          // Evict header line.
          if (!line.startsWith("trip_id")){
             // trip_id,service_id,route_id,trip_headsign,direction_id,block_id
@@ -72,12 +81,13 @@ public class GTFSParser {
             
             template.save(trip);
          }
+         i++;
          line = reader.readLine();
       }
       reader.close();
    }
    
-   protected void parseGTFSStops(File stopsFile, RouteRepository repository) throws IOException{
+   public void parseGTFSStops(File stopsFile, RouteRepository repository) throws IOException{
       // Browse file lines.
       BufferedReader reader = new BufferedReader(new FileReader(stopsFile));
       String line = reader.readLine();
@@ -106,7 +116,7 @@ public class GTFSParser {
       reader.close();
    }
    
-   protected void parseGTFSStopTimes(File stopTimesFile, TripRepository tripRepository, StopRepository stopRepository) throws IOException{
+   public void parseGTFSStopTimes(File stopTimesFile, TripRepository tripRepository, StopRepository stopRepository) throws IOException{
       // Key is trip id, values are corresponding stop times.
       Map<String, List<StopTime>> tripToStopTimes = new HashMap<String, List<StopTime>>();
       
@@ -117,7 +127,7 @@ public class GTFSParser {
       while (line != null){
          // Evict header line.
          if (i % 50 == 0){
-            System.err.println("   ... done " + i + " stopTimes ...");
+            log.info("   ... done " + i + " stopTimes ...");
          }
          if (!line.startsWith("trip_id")){
             // trip_id,stop_id,stop_sequence,arrival_time,departure_time,stop_headsign,pickup_type,drop_off_type,shape_dist_traveled
