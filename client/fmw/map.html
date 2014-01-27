@@ -1,16 +1,22 @@
-<!DOCTYPE html> 
+﻿<!DOCTYPE html> 
 <html>
 
 <head>
-	<meta charset="utf-8"/>
-	<meta name="viewport" content="width=device-width, initial-scale=1"/> 
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1"> 
 	<title>24H FMW</title> 
 	<link rel="stylesheet" href="jquery.mobile-1.3.1.min.css" />
-    <link rel="stylesheet" type="text/css" href="css/base.css" />
-    <script src="jquery-1.7.1.min.js"></script>
-	<script src="jquery.mobile-1.3.1.min.js"></script>  
-	<script src="https://maps.googleapis.com/maps/api/js?sensor=true"></script>
+    <link rel="stylesheet" type="text/css" href="css/base.css">
+	<script src="jquery-1.7.1.min.js"></script>
+	<script src="jquery.mobile-1.3.1.min.js"></script>
+	<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?libraries=places&amp;sensor=true"></script>
 	<script src="map-app.js"></script>
+	<script language="text/javascript">
+	$("search").submit(function(e) {
+    e.preventDefault();
+    geocode();
+});
+	</script>
 </head> 
 	
 <body> 
@@ -21,17 +27,18 @@
  <!-- <div data-role=header>
     <h1>24H FMW</h1>
   </div> -->
-    <div id="location-search-wrapper">        
+    <div id="location-search-wrapper">
       <p>
-        <input id="location" placeholder="Destination..." type="text" value="" onkeyup="if(event.keyCode == 13) {geocode();this.blur();}">
-        <span  id="search-location"><a class="button" href="#" onclick="showPath()">Trajet</a></span>
-      <p>     
+        <input id="location" style="width: 100%;" placeholder="Search..." type="text" value="" onkeyup="if(event.keyCode == 13){geocode();}"/>
+        <span><a href="#" onclick="geocode()" >Go!</a></span>
+      <p>    
     </div>
 
   <div data-role="content">
 
   </div>
   </div> <!-- /page map-page -->
+  <div id="data" style="display: none;"></div>
 
 </body>
 </html>
