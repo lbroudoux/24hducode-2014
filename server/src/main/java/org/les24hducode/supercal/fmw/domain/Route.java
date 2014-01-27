@@ -31,5 +31,5 @@ public class Route {
    
    @Fetch
    @RelatedTo(type = "ROUTE_TRIPS", direction = Direction.BOTH)
-   private Set<Trip> trips = new HashSet<Trip>();
+   private Set<Trip> trips;
 }

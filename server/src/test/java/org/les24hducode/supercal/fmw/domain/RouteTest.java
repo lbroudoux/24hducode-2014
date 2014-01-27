@@ -49,13 +49,18 @@ public class RouteTest {
       assertNotNull(first.getNodeId());
       assertEquals("myTrip", first.getId());
       
-      // Bi-directionnal relations are not fetched from leave point of view.
-      assertNull(first.getRoute());
+      // SIMPLE MODE -----------------------------
+      // Bi-directionnal relations are not fetched from leave point of view (simple mode).
+      //assertNull(first.getRoute());
       
       // You should request another time using leave as first request node.
       Trip find = template.findOne(first.getNodeId(), Trip.class);
       assertNotNull(find.getRoute());
       assertEquals(result.getNodeId(), find.getRoute().getNodeId());
+      
+      // ASPECTJ MODE ----------------------------
+      // Bi-directionnal relations are fetched from leave point of view (aspectj mode).
+      assertNotNull(first.getRoute());
    }
 
 }
