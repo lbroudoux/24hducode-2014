@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.les24hducode.supercal.fmw.api.PathView;
 import org.les24hducode.supercal.fmw.service.ShortestPathService;
 /**
- * 
+ * The web controller for /path resources.
  * @author laurent
  */
 @Controller

@@ -7,7 +7,7 @@ import org.springframework.data.neo4j.annotation.StartNode;
 import org.springframework.roo.addon.javabean.RooJavaBean;
 import org.springframework.roo.addon.tostring.RooToString;
 /**
- * 
+ * Section is a relationship between 2 stops of the same Route.
  * @author laurent
  */
 @RooJavaBean

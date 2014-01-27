@@ -6,7 +6,7 @@ import org.springframework.roo.addon.javabean.RooJavaBean;
 import org.springframework.roo.addon.tostring.RooToString;
 
 /**
- * 
+ * Domain object representing a GTFS StopTime.
  * @author laurent
  */
 @RooJavaBean

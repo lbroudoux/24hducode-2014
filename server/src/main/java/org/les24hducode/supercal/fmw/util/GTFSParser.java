@@ -21,7 +21,7 @@ import org.les24hducode.supercal.fmw.repository.StopRepository;
 import org.les24hducode.supercal.fmw.repository.TripRepository;
 import org.springframework.data.neo4j.support.Neo4jTemplate;
 /**
- * 
+ * A parser for GTFS files that fills a Neo4j datastore.
  * @author laurent
  */
 public class GTFSParser {

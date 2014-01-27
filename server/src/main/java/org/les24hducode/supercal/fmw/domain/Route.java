@@ -11,7 +11,7 @@ import org.springframework.data.neo4j.annotation.RelatedTo;
 import org.springframework.roo.addon.javabean.RooJavaBean;
 import org.springframework.roo.addon.tostring.RooToString;
 /**
- * 
+ * Domain object representing a GTFS Route.
  * @author laurent
  */
 @RooJavaBean

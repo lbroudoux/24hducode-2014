@@ -8,7 +8,7 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.springframework.roo.addon.javabean.RooJavaBean;
 /**
- * 
+ * An aggregate condensing information from GTFS Stop and StopTime.
  * @author laurent
  */
 @RooJavaBean

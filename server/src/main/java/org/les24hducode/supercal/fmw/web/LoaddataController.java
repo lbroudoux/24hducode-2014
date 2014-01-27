@@ -4,7 +4,6 @@ import java.io.File;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.geotools.coverage.grid.io.imageio.geotiff.codes.GeoTiffPCSCodes;
 import org.les24hducode.supercal.fmw.repository.RouteRepository;
 import org.les24hducode.supercal.fmw.repository.StopRepository;
 import org.les24hducode.supercal.fmw.repository.TripRepository;
@@ -17,7 +16,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 /**
- * 
+ * Utility for loading sample data within Neo4j datastore.
  * @author laurent
  */
 @Controller
@@ -51,7 +50,7 @@ public class LoaddataController {
       Transaction tx = template.getGraphDatabaseService().beginTx();
       log.info("Starting to parse routes file...");
       try{
-         File routeFile = new File("target/test-classes/gtfs/old/routes.txt");
+         File routeFile = new File("target/test-classes/gtfs/routes.txt");
          parser.parseGTFSRoutes(routeFile);
          tx.success();
       } catch (Exception e) {
@@ -65,7 +64,7 @@ public class LoaddataController {
       tx = template.getGraphDatabaseService().beginTx();
       log.info("Starting to parse trips file...");
       try{
-         File tripFile = new File("target/test-classes/gtfs/old/trips.txt");
+         File tripFile = new File("target/test-classes/gtfs/trips.txt");
          parser.parseGTFSTrips(tripFile, routeRepository);
          tx.success();
       } catch (Exception e) {
@@ -79,7 +78,7 @@ public class LoaddataController {
       tx = template.getGraphDatabaseService().beginTx();
       log.info("Starting to parse stops file...");
       try{
-         File stopFile = new File("target/test-classes/gtfs/old/stops.txt");
+         File stopFile = new File("target/test-classes/gtfs/stops.txt");
          parser.parseGTFSStops(stopFile, routeRepository);
          tx.success();
       } catch (Exception e) {
@@ -93,7 +92,7 @@ public class LoaddataController {
       tx = template.getGraphDatabaseService().beginTx();
       log.info("Starting to parse stops file...");
       try{
-         File stopTimeFile = new File("target/test-classes/gtfs/old/stop_times.txt");
+         File stopTimeFile = new File("target/test-classes/gtfs/stop_times.txt");
          parser.parseGTFSStopTimes(stopTimeFile, tripRepository, stopRepository);
          tx.success();
       } catch (Exception e) {

@@ -11,7 +11,7 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.springframework.roo.addon.javabean.RooJavaBean;
 /**
- * 
+ * A segment of a GTFS Route.
  * @author laurent
  */
 @RooJavaBean

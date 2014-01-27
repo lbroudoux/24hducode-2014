@@ -11,7 +11,8 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.springframework.roo.addon.javabean.RooJavaBean;
 /**
- * 
+ * Path representes an itinerary to a destination. It contains 
+ * segments of routes.
  * @author laurent
  */
 @RooJavaBean
