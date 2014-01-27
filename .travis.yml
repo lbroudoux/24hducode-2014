@@ -1,4 +1,4 @@
-before_install: cd fmw
+before_install: cd server
 language: java
 jdk:
   - openjdk7
